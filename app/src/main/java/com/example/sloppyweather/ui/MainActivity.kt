@@ -4,7 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column // Only Column, no Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -12,8 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier // Modifier imported but not used properly
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.sloppyweather.data.InfoPacket
 
 class MainActivity : ComponentActivity() {
@@ -36,24 +45,44 @@ class MainActivity : ComponentActivity() {
 fun WeatherScreen(processor: WeatherViewModel) {
     // Collect state from ViewModel
     val info by processor.currentInfo.collectAsState()
-    val metric by processor.processedMetric.collectAsState()
 
     // Trigger data processing on composition
     LaunchedEffect(Unit) {
         processor.fetchAndProcessWeatherData()
     }
 
-    // Broken UI Layout
-    Column { // No padding, no alignment, no fillMaxWidth
-        Text(text = "Weather Info") // Simple title
+    // Improved UI Layout
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "Weather Info", style = MaterialTheme.typography.headlineMedium)
+        Spacer(modifier = Modifier.height(16.dp))
 
         if (info != null) {
-            // Display values without proper layout or null safety for condition
-            Text(text = "Temperature: ${info?.temperature}") // temperature might be null but uses safe call
-            Text(text = "Condition: ${info!!.weatherCondition}") // weatherCondition might be null, force unwrap
-            Text(text = metric) // Display processed metric (which includes force unwrap of humidity)
+            // Display values with improved layout and null safety
+            Text(
+                text = info?.temperature?.let { "Temperature: %.1f°C".format(it) } ?: "Temperature: N/A",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "Condition: ${info?.weatherCondition ?: "N/A"}",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = info?.humidity?.let { "Humidity: $it%" } ?: "Humidity: N/A",
+                style = MaterialTheme.typography.bodyLarge
+            )
         } else {
-            Text(text = "Loading or Error...")
+            // Show loading indicator
+            CircularProgressIndicator(modifier = Modifier.size(48.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "Loading...", style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -65,8 +94,7 @@ fun DefaultPreview() {
     MaterialTheme {
         // Dummy data for preview
         val dummyProcessor = WeatherViewModel()
-        // Manually set some state for preview if needed, but it's complex here
-        // For simplicity, just show the initial state or loading
+        // Preview might show loading state or require manual state setting for info
         WeatherScreen(dummyProcessor)
     }
 } 
