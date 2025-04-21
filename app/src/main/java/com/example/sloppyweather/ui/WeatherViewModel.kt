@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
  *
  * @constructor `SourceFetcher` 인스턴스를 내부적으로 생성합니다.
  */
-class DataProcessor : ViewModel() {
+class WeatherViewModel : ViewModel() {
 
     private val fetcher = SourceFetcher()
 
@@ -45,7 +45,7 @@ class DataProcessor : ViewModel() {
      * 3. metricB 값을 가공하여 별도 저장
      * 4. 오류 발생시 상태 초기화
      */
-    fun processValues() {
+    fun fetchAndProcessWeatherData() {
         // 좋지 않은 방법: viewModelScope 대신 GlobalScope 사용
         GlobalScope.launch {
             try {
