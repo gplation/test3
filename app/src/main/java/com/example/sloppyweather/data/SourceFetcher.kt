@@ -27,13 +27,13 @@ class SourceFetcher {
         delay(1500) // API 호출 지연시간 시뮬레이션
 
         // 습도값 생성 - 50% 확률로 null 반환하여 오류 상황 시뮬레이션
-        val sometimesNullMetricB = if (Random.nextBoolean()) Random.nextInt(30, 80) else null
+        val sometimesNullHumidity = if (Random.nextBoolean()) Random.nextInt(30, 80) else null
 
         // 날씨 정보 패킷 생성
         val packet = InfoPacket(
-            valueA = Random.nextDouble(15.0, 30.0), // 현재 기온 생성
-            condition = listOf("Sunny", "Cloudy", "Rainy", null).random(), // 날씨 상태 생성
-            metricB = sometimesNullMetricB // 습도값 설정
+            temperature = Random.nextDouble(15.0, 30.0), // 현재 기온 생성
+            weatherCondition = listOf("Sunny", "Cloudy", "Rainy", null).random(), // 날씨 상태 생성
+            humidity = sometimesNullHumidity // 습도값 설정
         )
         println("Info fetched: $packet") // 생성된 데이터 로깅
         return packet

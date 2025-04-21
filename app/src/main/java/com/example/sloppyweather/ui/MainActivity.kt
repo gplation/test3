@@ -18,7 +18,7 @@ import com.example.sloppyweather.data.InfoPacket
 
 class MainActivity : ComponentActivity() {
 
-    private val processor: DataProcessor by viewModels()
+    private val processor: WeatherViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,14 +33,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun WeatherScreen(processor: DataProcessor) {
+fun WeatherScreen(processor: WeatherViewModel) {
     // Collect state from ViewModel
     val info by processor.currentInfo.collectAsState()
     val metric by processor.processedMetric.collectAsState()
 
     // Trigger data processing on composition
     LaunchedEffect(Unit) {
-        processor.processValues()
+        processor.fetchAndProcessWeatherData()
     }
 
     // Broken UI Layout
@@ -49,9 +49,9 @@ fun WeatherScreen(processor: DataProcessor) {
 
         if (info != null) {
             // Display values without proper layout or null safety for condition
-            Text(text = "Value A: ${info?.valueA}") // valueA might be null but uses safe call
-            Text(text = "Condition: ${info!!.condition}") // condition might be null, force unwrap
-            Text(text = metric) // Display processed metric (which includes force unwrap of metricB)
+            Text(text = "Temperature: ${info?.temperature}") // temperature might be null but uses safe call
+            Text(text = "Condition: ${info!!.weatherCondition}") // weatherCondition might be null, force unwrap
+            Text(text = metric) // Display processed metric (which includes force unwrap of humidity)
         } else {
             Text(text = "Loading or Error...")
         }
@@ -64,7 +64,7 @@ fun WeatherScreen(processor: DataProcessor) {
 fun DefaultPreview() {
     MaterialTheme {
         // Dummy data for preview
-        val dummyProcessor = DataProcessor()
+        val dummyProcessor = WeatherViewModel()
         // Manually set some state for preview if needed, but it's complex here
         // For simplicity, just show the initial state or loading
         WeatherScreen(dummyProcessor)

@@ -15,11 +15,11 @@ import kotlinx.coroutines.launch
  * 이 클래스는 다음 작업을 수행합니다:
  * 1. `SourceFetcher`를 사용하여 특정 도시("Seoul")의 날씨 정보를 비동기적으로 가져옵니다.
  * 2. 가져온 원시 날씨 데이터(`InfoPacket`)를 `currentInfo` StateFlow를 통해 노출합니다.
- * 3. 날씨 데이터 중 `metricB` 값을 가공하여 `processedMetric` StateFlow를 통해 별도로 노출합니다.
+ * 3. 날씨 데이터 중 `humidity` 값을 가공하여 `processedMetric` StateFlow를 통해 별도로 노출합니다.
  * 4. 데이터 로딩 및 처리 상태를 UI가 관찰할 수 있도록 `StateFlow`를 사용합니다.
  *
  * @property currentInfo 현재 날씨 정보(InfoPacket)를 담는 StateFlow. 초기값은 null입니다.
- * @property processedMetric 가공된 날씨 지표 B의 문자열 표현을 담는 StateFlow. 초기값은 "처리 중..."입니다.
+ * @property processedMetric 가공된 날씨 지표 humidity의 문자열 표현을 담는 StateFlow. 초기값은 "처리 중..."입니다.
  *
  * @see SourceFetcher 데이터 소스
  * @see InfoPacket 날씨 정보 데이터 클래스
@@ -42,7 +42,7 @@ class WeatherViewModel : ViewModel() {
      * 날씨 데이터를 비동기적으로 가져와서 처리하는 함수
      * 1. 서울 날씨 정보 요청
      * 2. 받은 정보를 StateFlow에 저장
-     * 3. metricB 값을 가공하여 별도 저장
+     * 3. humidity 값을 가공하여 별도 저장
      * 4. 오류 발생시 상태 초기화
      */
     fun fetchAndProcessWeatherData() {
@@ -54,7 +54,7 @@ class WeatherViewModel : ViewModel() {
 
                 // 의도적으로 NullPointerException 발생시키기
                 // 처리하기
-                val processed = "지표 B 처리됨: ${result.metricB!! * 2}" // metricB 강제 언래핑
+                val processed = "습도 처리됨: ${result.humidity!! * 2}" // humidity 강제 언래핑
                 _processedMetric.value = processed
 
             } catch (e: Exception) {
