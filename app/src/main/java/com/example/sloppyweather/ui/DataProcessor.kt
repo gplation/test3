@@ -10,17 +10,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
- * 날씨 데이터를 처리하는 ViewModel 클래스
- * 
- * 주요 기능:
- * 1. SourceFetcher를 통해 특정 도시(서울)의 날씨 정보를 가져옴
- * 2. 가져온 날씨 정보를 StateFlow를 통해 UI에 노출
- * 3. 날씨 정보 중 metricB 값을 가공하여 별도로 표시
- * 
- * 알려진 문제점:
- * - GlobalScope 사용 (viewModelScope 대신)
- * - 도시명이 하드코딩됨
- * - Null 안전성 미고려 (강제 언래핑 사용)
+ * 날씨 데이터를 가져오고 처리하여 UI에 제공하는 ViewModel 클래스입니다.
+ *
+ * 이 클래스는 다음 작업을 수행합니다:
+ * 1. `SourceFetcher`를 사용하여 특정 도시("Seoul")의 날씨 정보를 비동기적으로 가져옵니다.
+ * 2. 가져온 원시 날씨 데이터(`InfoPacket`)를 `currentInfo` StateFlow를 통해 노출합니다.
+ * 3. 날씨 데이터 중 `metricB` 값을 가공하여 `processedMetric` StateFlow를 통해 별도로 노출합니다.
+ * 4. 데이터 로딩 및 처리 상태를 UI가 관찰할 수 있도록 `StateFlow`를 사용합니다.
+ *
+ * @property currentInfo 현재 날씨 정보(InfoPacket)를 담는 StateFlow. 초기값은 null입니다.
+ * @property processedMetric 가공된 날씨 지표 B의 문자열 표현을 담는 StateFlow. 초기값은 "처리 중..."입니다.
+ *
+ * @see SourceFetcher 데이터 소스
+ * @see InfoPacket 날씨 정보 데이터 클래스
+ *
+ * @constructor `SourceFetcher` 인스턴스를 내부적으로 생성합니다.
  */
 class DataProcessor : ViewModel() {
 
